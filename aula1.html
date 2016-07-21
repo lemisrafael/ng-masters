@@ -5,24 +5,67 @@
 		<title>Aula 1</title>
 		<script type="text/javascript">
 			function vaibuscarasissues(){
+
 			    function GithubRepo(username, reponame){
-			    //seu codigo aqui...
+			    	
+			    	var retorno = [];
+			    	var repo = {
+			    		
+				    	'busca_issues': function (){
+				    		$.ajax({
+				    			url :'https://api.github.com/repos/' + username + '/' + reponame + '/issues',
+				    			beforeSend: function(){
+				    				$('.loader').css ({
+				    					display: 'block'
+				    				});
+				    			},
+				    			success: function(ret){
+				    				retorno = ret;
+				    				le_repo.popula_tabela("#issuestable");
+				    				$('#issuestable tr:even').css('background','#fff799');
+				    			},
+				    			complete: function(){
+				    				$('.loader').css({display:'none'});
+				    			}
+				    		})
+				    		return retorno;
+				    	},
+				    	'popula_tabela': function(tableID){
+				    		if (typeof retorno == 'string') {
+				    			retorno = JSON.parse(retorno);
+				    		}
+				    		for (var i = 0; i <  retorno.length; i++) {
+				    			 addItemRep(retorno[i], tableID);
+				    		}
+				    	}
+			    	}
+				    return repo;
+				};
+				
+				function addItemRep(item, tabela){
+					var linhaTable = '<tr>';
+					linhaTable += "<td>" + item.number + "</td><td>" + item.title + "</td>"  ;
+					linhaTable += "</tr>";
+					$(tabela).append(linhaTable);
+				}
+
+				var username = document.getElementById('user').value;
+				var reponame = document.getElementById('reponame').value;
+
+				var le_repo = GithubRepo(username, reponame);
+				    le_repo.busca_issues();    
 			}
-			//mais um pouco de codigo aqui....
-			var le_repo = GithubRepo(username, reponame);
-			    le_repo.busca_issues();
-			    le_repo.popula_tabela("#issuestable");
-			}
+
 		</script>
 	</head>
 	<body>
-		Usuario <input type="text" id="user">
-		Repositório <input type="text" id="reponame">
-		<button>Vai buscar as issues </button>
-
+		Usu&aacute;rio <input type="text" id="user" value="freedomsponsors">
+		Reposit&oacute;rio <input type="text" id="reponame" value="www.freedomsponsors.org">
+		<button onclick="vaibuscarasissues()">Vai buscar as issues</button>
+		<br /><br />
 		<table id="issuestable">
 			<tr>
-				<th>Numero</th>
+				<th>#</th>
 				<th>Titulo</th>
 			</tr>
 		</table>
