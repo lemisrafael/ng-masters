@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.4.3.min.js"></script>
+		<title>Aula 1</title>
+		<script type="text/javascript">
+			function vaibuscarasissues(){
+		    	function retorno(user, repo){
+		    		this.user = user;
+		    		this.repo = repo;
+		    		this.retor = [];
+		    	}
+		    	retorno.prototype.popula_tabela = function(idTable){
+		    		if (typeof this.retor == 'string') {
+			    			this.retor = JSON.parse(this.retor);
+		    		}
+		    		for (var i = 0; i <  this.retor.length; i++) {
+		    			 addItemRep(this.retor[i], idTable);
+		    		}
+		    	}
+			    function addItemRep(item, tabela){
+					var linhaTable = '<tr>';
+					linhaTable += "<td>" + item.number + "</td><td>" + item.title + "</td>"  ;
+					linhaTable += "</tr>";
+					$(tabela).append(linhaTable);
+				}
+		    	retorno.prototype.busca = function() {
+		    		$.ajax({
+		    			url :'https://api.github.com/repos/' + this.user + '/' + this.repo + '/issues',
+		    			success: function(ret){
+		    				this.retor = ret;
+		    			}
+		    		})
+		    	}
+		    	
+				var username = document.getElementById('user').value;
+				var reponame = document.getElementById('reponame').value;
+
+				if (username != '' && reponame != ''){
+					var repositorio = new retorno(username, reponame);
+				    repositorio.busca();
+
+				    repositorio.popula_tabela('#issuestable');
+				}   
+			}
+
+		</script>
+	</head>
+	<body>
+		Usu&aacute;rio <input type="text" id="user" value="freedomsponsors">
+		Reposit&oacute;rio <input type="text" id="reponame" value="www.freedomsponsors.org">
+		<button onclick="vaibuscarasissues()">Vai buscar as issues</button>
+		<br /><br />
+		<table id="issuestable">
+			<tr>
+				<th>#</th>
+				<th>Titulo</th>
+			</tr>
+		</table>
+	</body>
+</html>

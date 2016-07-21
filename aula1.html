@@ -14,18 +14,10 @@
 				    	'busca_issues': function (){
 				    		$.ajax({
 				    			url :'https://api.github.com/repos/' + username + '/' + reponame + '/issues',
-				    			beforeSend: function(){
-				    				$('.loader').css ({
-				    					display: 'block'
-				    				});
-				    			},
 				    			success: function(ret){
 				    				retorno = ret;
 				    				le_repo.popula_tabela("#issuestable");
 				    				$('#issuestable tr:even').css('background','#fff799');
-				    			},
-				    			complete: function(){
-				    				$('.loader').css({display:'none'});
 				    			}
 				    		})
 				    		return retorno;
@@ -49,18 +41,20 @@
 					$(tabela).append(linhaTable);
 				}
 
-				var username = document.getElementById('user').value;
-				var reponame = document.getElementById('reponame').value;
+				var username = document.getElementById('user').value + '';
+				var reponame = document.getElementById('reponame').value + '';
 
-				var le_repo = GithubRepo(username, reponame);
-				    le_repo.busca_issues();    
+				if (username != '' && reponame != ''){
+					var le_repo = GithubRepo(username, reponame);
+				    	le_repo.busca_issues();
+				}
 			}
 
 		</script>
 	</head>
 	<body>
-		Usu&aacute;rio <input type="text" id="user" value="freedomsponsors">
-		Reposit&oacute;rio <input type="text" id="reponame" value="www.freedomsponsors.org">
+		Usu&aacute;rio <input type="text" id="user">
+		Reposit&oacute;rio <input type="text" id="reponame">
 		<button onclick="vaibuscarasissues()">Vai buscar as issues</button>
 		<br /><br />
 		<table id="issuestable">
